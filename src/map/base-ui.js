@@ -5,7 +5,10 @@ const svgMarker = require('../svg-marker');
 
 const leaflet = require('leaflet');
 const EventEmitter = require('events').EventEmitter;
-const sunCalc = require('suncalc');
+
+const tileUrl = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+const attribution =
+  '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
 // TODO: I'm not sure what the ideal zoom level is.  Leaflet often uses 13
 // in docs and tutorials.  14 seems to provide a bit more context
@@ -20,20 +23,6 @@ class BaseUI extends EventEmitter {
   }
 
   init(lat, lng) {
-    let tileUrl;
-    let attribution;
-    let today = new Date();
-    let hour = today.getHours();
-    let time = sunCalc.getTimes(new Date(), lat, lng);
-
-    if(hour < time.sunrise.getHours() || hour >= time.sunset.getHours()){
-      tileUrl = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
-      attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>';
-    }
-    else{
-      tileUrl = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
-      attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>';
-    }
     let mapEl = document.createElement('div');
     mapEl.id = 'map';
     document.body.appendChild(mapEl);
